@@ -4,6 +4,8 @@ import 'package:rx_notifier/rx_notifier.dart';
 
 import 'controllers/home_controller.dart';
 import 'stores/home_store.dart';
+import 'stores/states/counter_failure_state.dart';
+import 'stores/states/counter_loading_state.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,7 +20,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    context.select(() => homeStore.counter);
+    context.select(() => homeStore.counterState);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Estado atômico')),
@@ -27,10 +29,20 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text('Quantidade de cliques'),
-            Text(
-              homeStore.counter.toString(),
-              style: Theme.of(context).textTheme.headlineMedium,
+            Visibility(
+              visible: homeStore.counterState is! CounterLoadingState,
+              replacement: const CircularProgressIndicator(),
+              child: Text(
+                homeStore.counter.toString(),
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
             ),
+            const SizedBox(height: 12),
+            if (homeStore.counterState is CounterFailureState)
+              Text(
+                (homeStore.counterState as CounterFailureState).message,
+                style: const TextStyle(color: Colors.red),
+              ),
             const SizedBox(height: 24),
             Row(
               mainAxisSize: MainAxisSize.min,
