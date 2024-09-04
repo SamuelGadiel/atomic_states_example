@@ -7,20 +7,15 @@ import 'stores/home_store.dart';
 import 'stores/states/counter_failure_state.dart';
 import 'stores/states/counter_loading_state.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
+class HomePage extends StatelessWidget {
   final homeStore = Modular.get<HomeStore>();
   final homeController = Modular.get<HomeController>();
 
+  HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    context.select(() => homeStore.counterState);
+    context.select(() => homeStore.counter);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Estado atômico')),
